@@ -1,8 +1,6 @@
 package hu.petrik.peoplerestclientjavafx;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,35 +13,35 @@ import java.io.IOException;
 
 public class UpdatePeopleController extends Controller {
     @FXML
-    private TextField nameField;
+    private TextField nevField;
     @FXML
-    private TextField emailField;
+    private TextField cimField;
     @FXML
-    private Spinner<Integer> ageField;
+    private Spinner<Integer> meretField;
     @FXML
-    private Button updateButton;
+    private Button frissitesButton;
 
-    private Person person;
+    private Rendeles person;
 
-    public void setPerson(Person person) {
+    public void setPerson(Rendeles person) {
         this.person = person;
-        nameField.setText(this.person.getName());
-        emailField.setText(this.person.getEmail());
-        ageField.getValueFactory().setValue(this.person.getAge());
+        nevField.setText(this.person.getNev());
+        cimField.setText(this.person.getCim());
+        meretField.getValueFactory().setValue(this.person.getMeret());
     }
 
     @FXML
     private void initialize() {
         SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 200, 30);
-        ageField.setValueFactory(valueFactory);
+        meretField.setValueFactory(valueFactory);
     }
 
     @FXML
     public void updateClick(ActionEvent actionEvent) {
-        String name = nameField.getText().trim();
-        String email = emailField.getText().trim();
-        int age = ageField.getValue();
+        String name = nevField.getText().trim();
+        String email = cimField.getText().trim();
+        int age = meretField.getValue();
         if (name.isEmpty()) {
             warning("Name is required");
             return;
@@ -53,16 +51,16 @@ public class UpdatePeopleController extends Controller {
             return;
         }
         // TODO: validate email format
-        this.person.setName(name);
-        this.person.setEmail(email);
-        this.person.setAge(age);
+        this.person.setNev(name);
+        this.person.setCim(email);
+        this.person.setMeret(age);
         Gson converter = new Gson();
         String json = converter.toJson(this.person);
         try {
             String url = App.BASE_URL + "/" + this.person.getId();
             Response response = RequestHandler.put(url, json);
             if (response.getResponseCode() == 200) {
-                Stage stage = (Stage) this.updateButton.getScene().getWindow();
+                Stage stage = (Stage) this.frissitesButton.getScene().getWindow();
                 stage.close();
             } else {
                 String content = response.getContent();
